@@ -29,6 +29,18 @@ npm start
 - Story hooks, ending teasers, numbered episodes, IndexedDB checkpoints, continuation, JSON export/import.
 - Server-rendered landing and distinct preset content, guide, page metadata, robots, generated social image, local fonts.
 
+## Planet Destruction mode
+
+Open `/planet-destruction` or choose **Planet destruction** in the mode switcher. This separately loaded Three.js/WebGL 2 scene includes three worlds, terrain and atmosphere shading, local 2K Earth-like surface textures, ocean reflections, night lights, impact scars, emissive fractures, particles, shockwaves, bloom, and instanced debris.
+
+Select Orbital laser, Meteor strike, or Antimatter; click a point on the planet or press Launch attack for a visible random target. Drag to rotate. Keys 1–3 select attacks and Space pauses. Impact power controls damage; at zero integrity, the world fragments. Reset rebuilds it. Auto barrage launches attacks every 1.65 simulation seconds.
+
+Use cinema or browser fullscreen for a larger viewport. High quality enables bloom; Balanced reduces pixel density and disables postprocessing. Camera shake respects reduced-motion preferences and can be switched off. The original bouncing-ball workspace is wider and its Bigger view now expands to the available viewport instead of a 720px panel.
+
+Planet recording captures only the 3D canvas and generated sound (not the interface), with up to 1920×1080 canvas pixels depending on viewport and quality. Stop manually or let the 30-second limit finish. Keep the tab visible. No account, external texture CDN, or API keys are needed. Surface textures and their upstream license are under `public/textures/`.
+
+This is a fictional cinematic sandbox, not a physically accurate planetary fracture model. Damage, strike timing, and integrity are simulated; glow, scars, debris, and destruction are visual effects. Planet scenes do not use bouncing-ball episode checkpoints.
+
 ## Deployment and search
 
 Canonical URLs and sitemap generation are intentionally omitted. `NEXT_PUBLIC_SITE_URL` is optional and only sets the base URL for social sharing metadata. Deploy to a Next.js-compatible host when ready.

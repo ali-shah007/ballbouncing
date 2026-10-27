@@ -1,0 +1,1554 @@
+.planet-page {
+  --space: #080b11;
+  --space-line: #ffffff0d;
+  --space-text: #d4dbe0;
+  --space-muted: #697884;
+  --space-blue: #9dc5dc;
+  background: var(--space);
+  color: var(--space-text);
+  min-height: 100vh;
+  font-family: "DM Sans Variable", Arial, sans-serif;
+}
+.planet-header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--space-line);
+  padding: 0 3%;
+}
+.planet-header .brand {
+  font-size: 23px;
+  color: #e5e8e6;
+}
+.planet-header .brand-mark i {
+  border-color: #92a5ad;
+}
+.planet-lab-badge {
+  margin-left: 12px;
+  font-size: 7px;
+  letter-spacing: 1.6px;
+  font-weight: 450;
+  background: #172129;
+  border: 1px solid #23313b;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #8da7b7;
+}
+.planet-header-right {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 10px;
+  color: #7e8e9b;
+}
+.planet-header-right > span {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.planet-header-right a {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 10px;
+}
+.planet-header-right button {
+  padding: 5px;
+  color: #8a9aa7;
+}
+.planet-status-dot {
+  height: 5px;
+  width: 5px;
+  background: #9ec1a7;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #9ec1a73a;
+}
+.planet-record-led {
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background: #f29e7e;
+  display: inline-block;
+  box-shadow: 0 0 9px #f29e7e50;
+  animation: pulse 1.2s infinite;
+}
+.warning-led {
+  height: 5px;
+  width: 5px;
+  background: #e48e6d;
+  border-radius: 50%;
+  display: inline-block;
+}
+.planet-main {
+  max-width: 1920px;
+  margin: auto;
+  padding: 0 3%;
+}
+.mode-dark {
+  border-color: var(--space-line);
+  padding: 15px 0;
+}
+.mode-dark .mode-label {
+  color: #687985;
+}
+.mode-dark a {
+  color: #6f808c;
+}
+.mode-dark a.active {
+  background: #162027;
+  border-color: #2a3a45;
+  color: #b1c8d4;
+}
+.mode-dark .mode-new {
+  background: #273649;
+  color: #97b6d0;
+}
+.mode-dark .mode-caption {
+  color: #5c6d79;
+}
+.planet-intro {
+  padding: 34px 0 29px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.planet-eyebrow {
+  font-size: 8px;
+  letter-spacing: 1.7px;
+  color: #7c93a4;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.planet-eyebrow > span {
+  width: 4px;
+  height: 4px;
+  background: #98b7c8;
+  border-radius: 50%;
+}
+.planet-intro h1 {
+  font-family: "Manrope Variable", Arial, sans-serif;
+  font-size: clamp(27px, 3.1vw, 48px);
+  font-weight: 450;
+  letter-spacing: -1.7px;
+  line-height: 1.2;
+  margin: 13px 0 11px;
+  color: #e3e6e6;
+}
+.planet-intro h1 em {
+  font-family: Georgia, serif;
+  color: #9aafb9;
+  font-weight: 400;
+}
+.mobile-break {
+  display: none;
+}
+.planet-intro p {
+  margin: 0;
+  font-size: 11px;
+  color: #748591;
+  line-height: 1.8;
+}
+.planet-intro-note {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10px;
+  line-height: 1.8;
+  color: #728795;
+  transform: rotate(-4deg);
+  padding-right: 18px;
+}
+.planet-intro-note svg {
+  color: #8ba4b3;
+  stroke-width: 1;
+}
+.planet-intro-note strong {
+  color: #a3b3ba;
+  font-weight: 400;
+}
+.planet-lab {
+  border: 1px solid #27323a;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b1016;
+  box-shadow: 0 15px 70px #00000035;
+}
+.planet-view {
+  position: relative;
+  width: 100%;
+  height: clamp(560px, 67vh, 900px);
+  min-height: 560px;
+  background: #03060d;
+  isolation: isolate;
+  overflow: hidden;
+}
+.planet-canvas {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: crosshair;
+}
+.planet-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+}
+.planet-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+  background: radial-gradient(ellipse at center, #142332, #060a11 65%);
+  color: #9fbdce;
+  text-align: center;
+  padding: 30px;
+}
+.planet-loading strong {
+  font-family: "Manrope Variable", Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.4px;
+}
+.planet-loading p {
+  max-width: 420px;
+  line-height: 1.7;
+  font-size: 12px;
+}
+.planet-loading span {
+  font-size: 10px;
+  color: #627e90;
+}
+.planet-view-top {
+  position: absolute;
+  z-index: 3;
+  left: 26px;
+  right: 22px;
+  top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.planet-feed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1.6px;
+  font-size: 7px;
+  color: #81939e;
+}
+.feed-divider {
+  width: 1px;
+  height: 9px;
+  background: #34424b;
+  margin: 0 4px;
+}
+.planet-view-actions {
+  display: flex;
+  gap: 7px;
+  pointer-events: auto;
+}
+.planet-view-actions button {
+  width: 29px;
+  height: 29px;
+  border: 1px solid #ffffff12;
+  background: #101a2370;
+  backdrop-filter: blur(8px);
+  color: #8ca4b4;
+  border-radius: 5px;
+}
+.planet-view-actions button:hover {
+  background: #20313d;
+}
+.world-ident {
+  position: absolute;
+  top: 88px;
+  left: 38px;
+  z-index: 2;
+  pointer-events: none;
+}
+.world-ident > span {
+  font-size: 7px;
+  letter-spacing: 1.6px;
+  color: #66808f;
+}
+.world-ident h2 {
+  font-family: "Manrope Variable", Arial, sans-serif;
+  font-size: 58px;
+  letter-spacing: -3px;
+  font-weight: 400;
+  margin: 10px 0 5px;
+  line-height: 1.1;
+  color: #e5e9e9;
+}
+.world-ident h2 > span {
+  font-size: 11px;
+  letter-spacing: 0;
+  vertical-align: super;
+  display: inline-block;
+  margin-left: 6px;
+  color: #697f8d;
+}
+.world-ident p {
+  font-size: 10px;
+  color: #6f8796;
+  margin: 0 0 23px;
+}
+.world-ident > div {
+  font-size: 7px;
+  letter-spacing: 1.3px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8ba497;
+}
+.planet-telemetry {
+  position: absolute;
+  top: 95px;
+  right: 35px;
+  width: 156px;
+  pointer-events: none;
+}
+.telemetry-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 6px;
+  letter-spacing: 1.2px;
+  color: #6c8291;
+  white-space: nowrap;
+}
+.integrity-value {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  color: #b6cbba;
+  margin: 13px 0;
+}
+.integrity-value strong {
+  font-family: "Manrope Variable", Arial, sans-serif;
+  font-size: 49px;
+  letter-spacing: -2px;
+  font-weight: 350;
+  line-height: 1;
+}
+.integrity-value > span {
+  font-size: 14px;
+  color: #5e7868;
+}
+.integrity-value.critical {
+  color: #f0a182;
+}
+.integrity-value.critical > span {
+  color: #b6765e;
+}
+.integrity-track {
+  height: 2px;
+  background: #ffffff10;
+  width: 100%;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.integrity-track > span {
+  height: 100%;
+  display: block;
+  transition: width 0.4s;
+}
+.planet-telemetry dl {
+  margin: 18px 0 0;
+  font-size: 8px;
+  color: #536d7c;
+}
+.planet-telemetry dl > div {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  align-items: center;
+}
+.planet-telemetry dd {
+  color: #98b0bf;
+  margin: 0;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.telemetry-coordinates {
+  font-size: 6px;
+  color: #304c60;
+  letter-spacing: 1px;
+  line-height: 2.2;
+  display: block;
+  margin-top: 30px;
+}
+.planet-reticle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  opacity: 0.15;
+  pointer-events: none;
+}
+.planet-reticle i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: #cadbe3;
+  border-style: solid;
+  border-width: 0;
+}
+.planet-reticle i:nth-child(1) {
+  left: 0;
+  top: 0;
+  border-left-width: 1px;
+  border-top-width: 1px;
+}
+.planet-reticle i:nth-child(2) {
+  right: 0;
+  top: 0;
+  border-right-width: 1px;
+  border-top-width: 1px;
+}
+.planet-reticle i:nth-child(3) {
+  left: 0;
+  bottom: 0;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+}
+.planet-reticle i:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+.planet-reticle > span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 2px;
+  width: 2px;
+  background: #c5d4df;
+  border-radius: 50%;
+}
+.planet-view-bottom {
+  position: absolute;
+  bottom: 24px;
+  left: 30px;
+  right: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.planet-interaction-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 8px;
+  color: #536d7e;
+  letter-spacing: 0.3px;
+}
+.planet-interaction-note svg {
+  color: #68879a;
+}
+.planet-zoom {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  pointer-events: auto;
+  background: #0c151e80;
+  border: 1px solid #ffffff0b;
+  padding: 6px;
+  border-radius: 5px;
+  backdrop-filter: blur(6px);
+}
+.planet-zoom button {
+  color: #7c9aad;
+  padding: 4px;
+}
+.planet-zoom span {
+  font-size: 8px;
+  color: #7892a2;
+  min-width: 28px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.planet-command {
+  padding: 22px 26px 25px;
+  border-top: 1px solid #1a2731;
+  background: linear-gradient(110deg, #10171e, #0d1218);
+}
+.weapon-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.weapon-heading > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 7px;
+  letter-spacing: 1.7px;
+  color: #78909f;
+}
+.weapon-heading small {
+  font-size: 6px;
+  letter-spacing: 1.3px;
+  color: #3f5665;
+}
+.planet-command-grid {
+  display: grid;
+  grid-template-columns: 1fr 265px;
+  gap: 35px;
+  align-items: center;
+}
+.weapon-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.weapon-card {
+  position: relative;
+  display: flex;
+  text-align: left;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 79px;
+  border: 1px solid #25303b;
+  background: #111922;
+  border-radius: 7px;
+  padding: 13px 14px;
+  transition:
+    border 0.2s,
+    background 0.2s;
+}
+.weapon-card.active {
+  border-color: color-mix(in srgb, var(--weapon-color), transparent 65%);
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--weapon-color), transparent 93%),
+    #111821
+  );
+}
+.weapon-icon {
+  width: 36px;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--weapon-color), transparent 90%);
+  background: color-mix(in srgb, var(--weapon-color), transparent 95%);
+  border-radius: 6px;
+  flex-shrink: 0;
+  color: var(--weapon-color);
+}
+.weapon-icon svg {
+  stroke-width: 1.3;
+  filter: drop-shadow(
+    0 0 7px color-mix(in srgb, var(--weapon-color), transparent 65%)
+  );
+}
+.weapon-card > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.weapon-card strong {
+  font-size: 11px;
+  font-weight: 450;
+  color: #b6c6d0;
+  white-space: nowrap;
+}
+.weapon-card small {
+  font-size: 8px;
+  color: #556d7e;
+  white-space: nowrap;
+}
+.weapon-card kbd {
+  font-family: inherit;
+  font-size: 7px;
+  margin-left: auto;
+  padding: 3px 5px;
+  border: 1px solid #ffffff0d;
+  border-radius: 3px;
+  color: #3d596d;
+  align-self: flex-start;
+}
+.weapon-selected {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--weapon-color), transparent 85%);
+  color: var(--weapon-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.launch-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.planet-power {
+  display: block;
+}
+.planet-power > span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: #617f92;
+}
+.planet-power strong {
+  font-size: 8px;
+  font-weight: 450;
+  color: #a1becf;
+}
+.planet-power input {
+  width: 100%;
+  height: 2px;
+  accent-color: #9bbdce;
+  margin: 11px 0 0;
+  display: block;
+  cursor: pointer;
+}
+.planet-launch {
+  padding: 13px 16px;
+  background: #afc9d4;
+  border: 1px solid #bdd7e0;
+  border-radius: 5px;
+  color: #182e3a;
+  font-size: 11px;
+  gap: 11px;
+  font-weight: 600;
+}
+.planet-launch svg:last-child {
+  margin-left: auto;
+}
+.planet-launch:disabled {
+  opacity: 0.3;
+}
+.planet-settings {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--space-line);
+  padding: 20px 0;
+  color: #728c9d;
+}
+.planet-world-control {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.planet-world-control label {
+  font-size: 7px;
+  letter-spacing: 1.3px;
+  color: #576f7e;
+}
+.planet-world-control select {
+  appearance: auto;
+  border: 0;
+  background: transparent;
+  color: #94aab6;
+  font-size: 10px;
+  max-width: 220px;
+  cursor: pointer;
+  padding: 5px;
+}
+.planet-world-control option,
+.planet-quality option {
+  background: #101923;
+  color: #a8bdc9;
+}
+.planet-settings-divider {
+  height: 16px;
+  border-left: 1px solid #24323c;
+}
+.planet-settings > button {
+  font-size: 9px;
+  padding: 5px 0;
+  color: #7a95a5;
+  gap: 8px;
+  white-space: nowrap;
+}
+.planet-settings > button.auto-active {
+  color: #b3d4be;
+}
+.planet-mini-toggle {
+  width: 21px;
+  height: 12px;
+  border-radius: 12px;
+  background: #25333e;
+  position: relative;
+  margin-left: 2px;
+}
+.planet-mini-toggle:after {
+  content: "";
+  height: 8px;
+  width: 8px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  background: #698291;
+  transition: transform 0.2s;
+}
+.planet-mini-toggle.on {
+  background: #3e5c4b;
+}
+.planet-mini-toggle.on:after {
+  transform: translateX(9px);
+  background: #b1c8b0;
+}
+.planet-settings-spacer {
+  flex: 1;
+}
+.planet-settings .planet-record-button {
+  border: 1px solid #2b3d4a;
+  background: #121e28;
+  border-radius: 5px;
+  color: #a2bdcd;
+  padding: 10px 13px;
+  font-size: 10px;
+}
+.planet-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+.planet-bottom > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.planet-fine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  color: #5e7584;
+}
+.planet-fine.subtle {
+  font-size: 7px;
+  color: #394f60;
+  padding-left: 18px;
+}
+.planet-quality {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.planet-quality label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+  color: #536d80;
+}
+.planet-quality input {
+  accent-color: #7193a3;
+  width: 11px;
+  height: 11px;
+  margin: 0;
+  cursor: pointer;
+}
+.planet-quality select {
+  border: 0;
+  padding: 2px 0;
+  font-size: 8px;
+  background: transparent;
+  color: #6f8ca0;
+  cursor: pointer;
+}
+.planet-editorial {
+  border-top: 1px solid var(--space-line);
+  padding: 35px 0 50px;
+  margin-top: 32px;
+}
+.planet-editorial > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 12%;
+  align-items: start;
+}
+.planet-editorial h2 {
+  font-family: "Manrope Variable", Arial, sans-serif;
+  font-size: 29px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  line-height: 1.5;
+  color: #c4cfd3;
+  margin: 20px 0 0;
+  grid-row: 1/3;
+}
+.planet-editorial h2 em {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: #718f9e;
+}
+.planet-editorial p {
+  font-size: 11px;
+  color: #5b7587;
+  line-height: 1.9;
+  margin: 22px 0 12px;
+  max-width: 490px;
+}
+.planet-editorial a {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 10px;
+  color: #91adbe;
+}
+.planet-footer {
+  border-top: 1px solid var(--space-line);
+  padding: 24px 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8px;
+  color: #3f596c;
+}
+.planet-footer > span:first-child {
+  font-size: 12px;
+  color: #8ca3b0;
+  font-weight: 500;
+}
+.planet-footer small {
+  font-size: 6px;
+  letter-spacing: 1px;
+  font-weight: 400;
+  margin-left: 14px;
+  color: #415b6d;
+}
+.planet-destroyed {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  z-index: 4;
+  pointer-events: none;
+  text-shadow: 0 2px 30px #000;
+}
+.planet-destroyed > span {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: #b6ad9d;
+}
+.planet-destroyed h3 {
+  font-family: Georgia, serif;
+  font-size: 40px;
+  font-weight: 400;
+  font-style: italic;
+  color: #f1e0ca;
+  letter-spacing: -0.5px;
+  margin: 15px 0 12px;
+}
+.planet-destroyed p {
+  font-size: 10px;
+  color: #a3907c;
+}
+.planet-destroyed button {
+  pointer-events: auto;
+  color: #e2c6a8;
+  border: 1px solid #ac866e55;
+  background: #37281e90;
+  backdrop-filter: blur(5px);
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 10px;
+  margin-top: 15px;
+}
+.planet-cinema .planet-header,
+.planet-cinema .mode-switcher,
+.planet-cinema .planet-intro,
+.planet-cinema .planet-editorial,
+.planet-cinema .planet-footer,
+.planet-cinema .planet-bottom {
+  display: none;
+}
+.planet-cinema .planet-main {
+  padding: 12px;
+}
+.planet-cinema .planet-view {
+  height: calc(100dvh - 250px);
+  min-height: 420px;
+}
+.planet-cinema .planet-settings {
+  border: 0;
+  padding: 13px 5px;
+}
+.planet-view:fullscreen {
+  height: 100vh;
+  width: 100vw;
+}
+.planet-help {
+  position: fixed;
+  z-index: 90;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 480px;
+  width: calc(100% - 32px);
+  background: #121c26;
+  border: 1px solid #3c5365;
+  border-radius: 12px;
+  padding: 35px;
+  box-shadow:
+    0 0 0 100vmax #000b,
+    0 30px 100px #0008;
+  color: #a5bbc9;
+  max-height: 90vh;
+  overflow: auto;
+}
+.planet-help h2 {
+  font-family: "Manrope Variable", Arial, sans-serif;
+  font-weight: 450;
+  font-size: 25px;
+  letter-spacing: -0.8px;
+  margin-top: 22px;
+}
+.planet-help p {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #7e9aaf;
+}
+.planet-help .planet-launch {
+  width: 100%;
+  margin-top: 15px;
+}
+.planet-help-close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  color: #7896aa;
+  padding: 3px;
+}
+@media (min-width: 1700px) {
+  .planet-view {
+    height: 72vh;
+    max-height: 1000px;
+  }
+  .planet-command-grid {
+    grid-template-columns: 1fr 320px;
+    gap: 50px;
+  }
+  .weapon-card {
+    min-height: 87px;
+  }
+  .weapon-card strong {
+    font-size: 13px;
+  }
+  .weapon-card small {
+    font-size: 10px;
+  }
+  .world-ident {
+    left: 50px;
+    top: 110px;
+  }
+  .world-ident h2 {
+    font-size: 72px;
+  }
+  .planet-telemetry {
+    right: 50px;
+    top: 120px;
+    width: 180px;
+  }
+  .telemetry-title {
+    font-size: 8px;
+  }
+  .integrity-value strong {
+    font-size: 60px;
+  }
+}
+@media (max-width: 1150px) {
+  .planet-command-grid {
+    gap: 20px;
+    grid-template-columns: 1fr 220px;
+  }
+  .weapon-options {
+    gap: 7px;
+  }
+  .weapon-card {
+    padding: 12px 9px;
+    gap: 8px;
+  }
+  .weapon-icon {
+    width: 28px;
+    height: 34px;
+  }
+  .weapon-icon svg {
+    width: 20px;
+  }
+  .weapon-card strong {
+    font-size: 9px;
+  }
+  .weapon-card small {
+    font-size: 6px;
+  }
+  .weapon-card kbd {
+    display: none;
+  }
+  .planet-settings {
+    gap: 18px;
+  }
+  .planet-world-control select {
+    max-width: 190px;
+    font-size: 9px;
+  }
+  .planet-intro h1 {
+    font-size: 35px;
+  }
+  .planet-view {
+    height: 65vh;
+    min-height: 550px;
+  }
+}
+@media (max-width: 850px) {
+  .planet-command-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .launch-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+  }
+  .weapon-card {
+    padding: 14px;
+    gap: 12px;
+  }
+  .weapon-icon {
+    width: 36px;
+    height: 40px;
+  }
+  .weapon-card strong {
+    font-size: 11px;
+  }
+  .weapon-card small {
+    font-size: 8px;
+  }
+  .planet-telemetry {
+    right: 24px;
+    top: 90px;
+    width: 125px;
+  }
+  .telemetry-title {
+    font-size: 5px;
+    gap: 5px;
+  }
+  .world-ident {
+    left: 25px;
+    top: 80px;
+  }
+  .world-ident h2 {
+    font-size: 47px;
+  }
+  .planet-intro-note {
+    display: none;
+  }
+  .planet-settings {
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .planet-world-control select {
+    max-width: 185px;
+  }
+  .planet-settings-divider {
+    display: none;
+  }
+  .planet-world-control {
+    margin-right: auto;
+  }
+  .planet-record-button {
+    margin-left: auto;
+  }
+  .planet-settings-spacer {
+    display: none;
+  }
+  .planet-header-right > span {
+    display: none;
+  }
+  .planet-header-right {
+    gap: 20px;
+  }
+  .planet-header {
+    height: 72px;
+  }
+  .planet-editorial > div {
+    column-gap: 7%;
+  }
+  .planet-editorial h2 {
+    font-size: 25px;
+  }
+}
+@media (max-width: 600px) {
+  .planet-header {
+    padding: 0 18px;
+    height: 66px;
+  }
+  .planet-header .brand {
+    font-size: 20px;
+    letter-spacing: -0.8px;
+  }
+  .planet-lab-badge {
+    font-size: 5px;
+    padding: 5px 6px;
+    margin-left: 6px;
+    letter-spacing: 1px;
+  }
+  .planet-header-right a {
+    display: none;
+  }
+  .planet-main {
+    padding: 0 12px;
+  }
+  .planet-main .mode-switcher a {
+    font-size: 10px;
+    padding: 9px;
+  }
+  .planet-intro {
+    padding: 27px 6px 24px;
+  }
+  .planet-intro .planet-eyebrow {
+    font-size: 6px;
+    letter-spacing: 1.5px;
+  }
+  .planet-intro h1 {
+    font-size: 31px;
+    letter-spacing: -1px;
+    margin: 12px 0;
+  }
+  .mobile-break {
+    display: block;
+  }
+  .planet-intro h1 em {
+    font-size: 34px;
+  }
+  .planet-intro p {
+    font-size: 9px;
+    max-width: 290px;
+    line-height: 1.8;
+  }
+  .planet-lab {
+    border-radius: 9px;
+  }
+  .planet-view {
+    height: 610px;
+    min-height: 0;
+    max-height: 80vh;
+  }
+  .planet-view-top {
+    top: 15px;
+    left: 16px;
+    right: 14px;
+  }
+  .planet-feed {
+    font-size: 5px;
+    letter-spacing: 1px;
+    gap: 5px;
+  }
+  .feed-divider {
+    display: none;
+  }
+  .planet-view-actions {
+    gap: 4px;
+  }
+  .planet-view-actions button {
+    width: 24px;
+    height: 26px;
+  }
+  .planet-view-actions button svg {
+    width: 13px;
+  }
+  .planet-feed {
+    max-width: 155px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .world-ident {
+    top: 66px;
+    left: 20px;
+  }
+  .world-ident > span {
+    font-size: 5px;
+    letter-spacing: 1.1px;
+  }
+  .world-ident h2 {
+    font-size: 38px;
+    letter-spacing: -1.7px;
+    margin: 11px 0 6px;
+  }
+  .world-ident h2 > span {
+    font-size: 8px;
+  }
+  .world-ident p {
+    font-size: 8px;
+    margin-bottom: 13px;
+  }
+  .world-ident > div {
+    font-size: 5px;
+    letter-spacing: 0.9px;
+    gap: 5px;
+  }
+  .planet-telemetry {
+    right: 17px;
+    top: 77px;
+    width: 83px;
+  }
+  .telemetry-title {
+    font-size: 4px;
+    letter-spacing: 0.4px;
+    gap: 3px;
+  }
+  .telemetry-title svg {
+    width: 8px;
+  }
+  .integrity-value {
+    margin: 11px 0;
+  }
+  .integrity-value strong {
+    font-size: 33px;
+    letter-spacing: -1px;
+  }
+  .integrity-value > span {
+    font-size: 9px;
+  }
+  .planet-telemetry dl {
+    font-size: 6px;
+    margin-top: 12px;
+  }
+  .planet-telemetry dd {
+    font-size: 8px;
+  }
+  .planet-telemetry dl > div {
+    margin: 8px 0;
+  }
+  .telemetry-coordinates {
+    display: none;
+  }
+  .planet-view-bottom {
+    left: 17px;
+    right: 14px;
+    bottom: 17px;
+    align-items: flex-end;
+  }
+  .planet-interaction-note {
+    font-size: 6px;
+    max-width: 165px;
+    gap: 6px;
+    line-height: 1.8;
+  }
+  .planet-interaction-note svg {
+    width: 11px;
+    flex-shrink: 0;
+  }
+  .planet-zoom {
+    gap: 5px;
+    padding: 3px;
+  }
+  .planet-zoom button {
+    padding: 3px;
+  }
+  .planet-zoom span {
+    font-size: 7px;
+  }
+  .planet-command {
+    padding: 18px 13px;
+  }
+  .weapon-heading > span {
+    font-size: 6px;
+    letter-spacing: 1px;
+    gap: 6px;
+  }
+  .weapon-heading small {
+    display: none;
+  }
+  .weapon-heading {
+    margin-bottom: 13px;
+  }
+  .weapon-options {
+    gap: 7px;
+  }
+  .weapon-card {
+    min-height: 108px;
+    flex-direction: column;
+    gap: 10px;
+    padding: 13px 5px;
+    text-align: center;
+    justify-content: center;
+  }
+  .weapon-card > span:nth-child(2) {
+    gap: 5px;
+  }
+  .weapon-icon {
+    border: 0;
+    background: none;
+    width: 26px;
+    height: 26px;
+  }
+  .weapon-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .weapon-card strong {
+    font-size: 9px;
+  }
+  .weapon-card small {
+    font-size: 5px;
+    letter-spacing: -0.1px;
+  }
+  .weapon-selected {
+    bottom: 5px;
+    right: 5px;
+    height: 10px;
+    width: 10px;
+  }
+  .weapon-selected svg {
+    width: 8px;
+  }
+  .launch-controls {
+    gap: 17px;
+    grid-template-columns: 1fr 1.2fr;
+  }
+  .planet-power > span {
+    font-size: 8px;
+  }
+  .planet-power strong {
+    font-size: 7px;
+  }
+  .planet-launch {
+    padding: 12px 10px;
+    font-size: 10px;
+    gap: 7px;
+  }
+  .planet-launch svg {
+    width: 14px;
+  }
+  .planet-command-grid {
+    gap: 20px;
+  }
+  .planet-settings {
+    gap: 18px;
+    padding: 17px 4px;
+  }
+  .planet-world-control {
+    width: 100%;
+    border-bottom: 1px solid var(--space-line);
+    padding-bottom: 15px;
+  }
+  .planet-world-control select {
+    max-width: none;
+    flex: 1;
+    font-size: 11px;
+    padding-left: 8px;
+  }
+  .planet-world-control label {
+    font-size: 7px;
+  }
+  .planet-settings > button {
+    font-size: 8px;
+    gap: 6px;
+  }
+  .planet-settings .planet-record-button {
+    font-size: 8px;
+    padding: 8px;
+  }
+  .planet-mini-toggle {
+    display: none;
+  }
+  .planet-settings > button svg {
+    width: 13px;
+  }
+  .planet-bottom {
+    padding: 18px 4px;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .planet-fine {
+    font-size: 7px;
+    line-height: 1.7;
+    align-items: flex-start;
+  }
+  .planet-fine svg {
+    flex-shrink: 0;
+  }
+  .planet-fine.subtle {
+    font-size: 6px;
+    line-height: 1.7;
+  }
+  .planet-quality {
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .planet-quality label,
+  .planet-quality select {
+    font-size: 9px;
+  }
+  .planet-editorial {
+    margin-top: 15px;
+    padding: 30px 5px 35px;
+  }
+  .planet-editorial .planet-eyebrow {
+    font-size: 7px;
+  }
+  .planet-editorial > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .planet-editorial h2 {
+    font-size: 26px;
+    grid-row: auto;
+    line-height: 1.4;
+  }
+  .planet-editorial p {
+    font-size: 11px;
+    line-height: 1.9;
+    margin-top: 17px;
+  }
+  .planet-editorial a {
+    font-size: 10px;
+    margin-top: 5px;
+  }
+  .planet-footer {
+    margin: 0 5px;
+    padding: 22px 0;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .planet-footer > span:first-child {
+    font-size: 11px;
+  }
+  .planet-footer small {
+    font-size: 5px;
+  }
+  .planet-footer > span:last-child {
+    font-size: 7px;
+  }
+  .planet-destroyed h3 {
+    font-size: 29px;
+  }
+  .planet-destroyed > span {
+    font-size: 6px;
+    letter-spacing: 2px;
+  }
+  .planet-destroyed p {
+    font-size: 9px;
+  }
+  .planet-cinema .planet-main {
+    padding: 6px;
+  }
+  .planet-cinema .planet-view {
+    height: calc(100dvh - 345px);
+    max-height: none;
+    min-height: 370px;
+  }
+  .planet-cinema .planet-world-control {
+    display: none;
+  }
+  .planet-cinema .planet-settings {
+    padding: 14px 5px;
+  }
+  .planet-view:fullscreen {
+    height: 100dvh;
+    max-height: none;
+  }
+  .planet-help {
+    padding: 30px 23px;
+  }
+  .planet-help .planet-eyebrow {
+    font-size: 6px;
+  }
+  .planet-help h2 {
+    font-size: 24px;
+  }
+  .planet-help p {
+    font-size: 11px;
+  }
+}
+/* Cinema prioritizes the scene; keep a compact attack dock within reach. */
+.planet-cinema .planet-view {
+  height: calc(100dvh - 110px);
+  min-height: 350px;
+  max-height: none;
+}
+.planet-cinema .planet-command {
+  padding: 11px 16px;
+}
+.planet-cinema .weapon-heading,
+.planet-cinema .planet-settings,
+.planet-cinema .planet-power {
+  display: none;
+}
+.planet-cinema .planet-command-grid {
+  grid-template-columns: 1fr 220px;
+  gap: 25px;
+}
+.planet-cinema .weapon-card {
+  min-height: 55px;
+  padding: 8px 12px;
+}
+.planet-cinema .weapon-card small {
+  display: none;
+}
+.planet-cinema .launch-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.planet-cinema .planet-launch {
+  width: 100%;
+}
+@media (max-width: 600px) {
+  .planet-cinema .planet-view {
+    height: calc(100dvh - 92px);
+    min-height: 350px;
+  }
+  .planet-cinema .planet-command {
+    padding: 10px;
+  }
+  .planet-cinema .planet-command-grid {
+    grid-template-columns: 1fr 125px;
+    gap: 12px;
+  }
+  .planet-cinema .weapon-card {
+    min-height: 49px;
+    padding: 7px;
+    gap: 0;
+  }
+  .planet-cinema .weapon-card > span:nth-child(2) {
+    display: none;
+  }
+  .planet-cinema .weapon-icon {
+    width: 24px;
+    height: 27px;
+  }
+  .planet-cinema .planet-launch {
+    font-size: 9px;
+    padding: 13px 7px;
+    gap: 6px;
+  }
+  .planet-cinema .planet-launch svg:last-child {
+    display: none;
+  }
+}

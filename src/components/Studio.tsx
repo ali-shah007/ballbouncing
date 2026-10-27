@@ -37,6 +37,7 @@ import {
   validateEpisodes,
 } from "@/lib/storage";
 import type { CanvasHandle } from "./SimulationCanvas";
+import ModeSwitcher from "./ModeSwitcher";
 const Canvas = dynamic(() => import("./SimulationCanvas"), {
   ssr: false,
   loading: () => (
@@ -265,6 +266,7 @@ export default function Studio({ initialPreset }: { initialPreset?: string }) {
         </span>
       </header>
       <main>
+        <ModeSwitcher />
         <section className="intro">
           <div>
             <div className="eyebrow">
@@ -278,17 +280,9 @@ export default function Studio({ initialPreset }: { initialPreset?: string }) {
               story unfold.
             </p>
           </div>
-          <div className="intro-note">
-            <Sparkles size={17} />
-            <span>
-              Oddly satisfying.
-              <br />
-              <strong>Entirely yours.</strong>
-            </span>
-            <svg viewBox="0 0 50 40" aria-hidden="true">
-              <path d="M3 5Q40 0 36 30M27 24l9 8 9-8" />
-            </svg>
-          </div>
+          <button className="intro-expand" onClick={() => setFocus(true)}>
+            <Maximize2 size={17} /> Bigger view <ArrowRight size={14} />
+          </button>
         </section>
         <section id="studio" className="workspace" aria-label="Video creator">
           <aside className="settings-panel">
