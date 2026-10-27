@@ -33,6 +33,12 @@ npm start
 
 Canonical URLs and sitemap generation are intentionally omitted. `NEXT_PUBLIC_SITE_URL` is optional and only sets the base URL for social sharing metadata. Deploy to a Next.js-compatible host when ready.
 
+## Vercel deployment
+
+Import `ali-shah007/ballbouncing` and deploy branch `main` from the repository root (leave Root Directory empty). The checked-in `vercel.json` explicitly selects the Next.js framework, `npm ci`, `npm run build`, and the `.next` build output. No environment variables are required.
+
+After a new commit, open the **latest Ready deployment** using Vercel’s Visit button or the project’s production domain. Older deployment-specific URLs continue to reference their original build. If a fresh deployment still returns a platform 404, inspect its build log and confirm the project points to this repository and root directory; these account settings cannot be changed by repository configuration.
+
 ## Current boundaries
 
 Recording uses MediaRecorder and the browser's supported format, generally WebM; it is real-time and requires a visible tab. Output is 900×1125 or 900×1600, requested at 60fps (actual frame rate depends on hardware). The next-episode teaser appears during the final two seconds. Use desktop Chrome or Firefox for the broadest recording support. Background tabs may throttle rendering. Resizing the recording canvas is disabled during recording. Stories remain on the device; export JSON for backup.
