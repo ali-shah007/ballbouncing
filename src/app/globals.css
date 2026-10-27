@@ -2206,3 +2206,19 @@ main {
     height: calc(100dvh - 180px);
   }
 }
+@media (max-width: 700px) {
+  .mode-switcher > div {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mode-switcher {
+    gap: 6px;
+  }
+  .mode-switcher a {
+    font-size: 9px;
+    padding: 8px;
+  }
+  .mode-caption {
+    display: none;
+  }
+}

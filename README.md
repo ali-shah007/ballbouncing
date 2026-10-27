@@ -56,3 +56,11 @@ After a new commit, open the **latest Ready deployment** using Vercel’s Visit 
 Recording uses MediaRecorder and the browser's supported format, generally WebM; it is real-time and requires a visible tab. Output is 900×1125 or 900×1600, requested at 60fps (actual frame rate depends on hardware). The next-episode teaser appears during the final two seconds. Use desktop Chrome or Firefox for the broadest recording support. Background tabs may throttle rendering. Resizing the recording canvas is disabled during recording. Stories remain on the device; export JSON for backup.
 
 Physics models ball-to-ring and equal-mass ball-to-ball collisions. The first five balls have recurring character identities. Audio trigger frequency and ball count are bounded. Checkpoints reproduce physical state, but transient particles and audio tails are not persisted. Individual character name editing, multi-ring seasons, fixed-frame export, and universal MP4 are future enhancements.
+
+## Nation Rise
+
+Open `/nation-rise` for the separate idle country-building game. Select a country, build and upgrade ten project types across six fictional development districts, balance food/power/housing, and grow employment and wellbeing. Research unlocks construction crews, trade terminals, and an automatic regional manager. Policies affect taxation and pollution; six milestones award treasury bonuses, and periodic economic events adjust reserves.
+
+Local per-country campaigns autosave every five seconds. Offline simulation is capped at four hours, and JSON export/import supports backups and transfers. Browser storage is not an online account. Record the animated 1600×1000 map with its treasury, population, resource indicators, and explanatory captions for up to 60 seconds; output format depends on browser support. Nation recordings are silent. Time-lapse supports 1×, 2×, and 5× economy speed.
+
+Country outlines come from Natural Earth (public domain), hosted locally. The largest mainland polygon is shown; islands and overseas territories are not fully represented in this development view. Buildings are stylized canvas dioramas, not street-level 3D reconstructions. Districts, population and economic values are fictional and balanced for gameplay. This is a single-player local game, without multiplayer, server accounts, real financial forecasts, or a global leaderboard.
