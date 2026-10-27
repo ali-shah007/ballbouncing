@@ -2222,3 +2222,13 @@ main {
     display: none;
   }
 }
+
+.mode-switcher > div {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+@media (max-width: 1200px) {
+  .mode-switcher .mode-caption {
+    display: none;
+  }
+}

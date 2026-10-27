@@ -90,3 +90,11 @@ npm run android:open
 ### Scope and remaining work
 
 This is a playable vertical slice with connected-economy and idle progression systems. It is not a completed commercial release. Green Valley is the complete starter environment; Copper Ridge and Lakeside open additional plots and industry. Tourism/technology districts, airports, seaports beyond the cargo terminal, megaprojects, unique manager skill trees, free-form road building, a full soundtrack, and extensive long-term balance remain future content. Current audio provides action chimes and an optional quiet ambient tone, not the full vehicle/factory soundscape. Reduced-motion and 30fps low-graphics controls are under Nation. Native behavior and performance still require Android device testing; browser checks do not establish 60fps on phones.
+
+## Nation State — policy simulation
+
+Open `/nation-state` for a separate monthly country-management mode. Start a US, Indian, or Nepalese mandate; manage budgets, funded bond auctions, debt service, infrastructure lead times, exchange-rate constraints, defence readiness and diplomatic proposals. The current GDP/population baselines are historical 2023 World Bank observations; other starting parameters and economic responses are illustrative. The built-in Model tab and [model guide](docs/nation-state-model.md) explain the equations, sources and limitations.
+
+Delegates are fictional **local strategic agents**, with seeded fiscal, pragmatic, patronage-driven and security-first personalities. They are not language models or real officials. Offers disclose funding costs, risk premiums, fees, amortization and FX stress. Signing validates affordability and settles actual balances; conversation alone cannot move money. A model-powered conversational layer is not connected.
+
+Nation State uses separate IndexedDB saves and JSON backups. Time advances only through **Advance one month**; there are no idle policy decisions. All existing game/video modes remain separate. Cash conservation and national-accounting tests do not make this a mathematically exact prediction of real economies. See the model guide for unsupported systems and validation still needed.
