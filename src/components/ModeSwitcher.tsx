@@ -3,7 +3,7 @@ import { CircleDot, Orbit, ArrowUpRight } from "lucide-react";
 export default function ModeSwitcher({
   active = "balls",
 }: {
-  active?: "balls" | "planet" | "nation";
+  active?: "balls" | "planet" | "nation" | "tycoon";
 }) {
   return (
     <nav
@@ -34,6 +34,13 @@ export default function ModeSwitcher({
         >
           <CircleDot size={15} /> Nation Rise{" "}
           <span className="mode-new">GAME</span>
+        </Link>
+        <Link
+          href="/nation-tycoon"
+          className={active === "tycoon" ? "active" : ""}
+        >
+          <Orbit size={16} /> Nation Tycoon{" "}
+          <span className="mode-new">NEW</span>
         </Link>
       </div>
       <span className="mode-caption">

@@ -64,3 +64,29 @@ Open `/nation-rise` for the separate idle country-building game. Select a countr
 Local per-country campaigns autosave every five seconds. Offline simulation is capped at four hours, and JSON export/import supports backups and transfers. Browser storage is not an online account. Record the animated 1600×1000 map with its treasury, population, resource indicators, and explanatory captions for up to 60 seconds; output format depends on browser support. Nation recordings are silent. Time-lapse supports 1×, 2×, and 5× economy speed.
 
 Country outlines come from Natural Earth (public domain), hosted locally. The largest mainland polygon is shown; islands and overseas territories are not fully represented in this development view. Buildings are stylized canvas dioramas, not street-level 3D reconstructions. Districts, population and economic values are fictional and balanced for gameplay. This is a single-player local game, without multiplayer, server accounts, real financial forecasts, or a global leaderboard.
+
+## Nation Tycoon — Green Valley
+
+Open `/nation-tycoon`. This is a separate portrait-first Phaser 3 game, not a Nation Rise map or video editor. The world supports drag, wheel/pinch zoom, plot selection, placement confirmation/cancellation, 15 buildable project types, worker assignment, per-business input/output inventories, power constraints, actual delivery cargo over cached roads, manual cycles, paid manager automation, upgrades, six claimable contracts, five research categories, and two district expansions. Original building and upgrade atlases are in `public/tycoon/`.
+
+Start with the automated wheat farm. Build a Food factory and Grocery market, wait for construction, then hire their managers from Industry → building details. Trucks deliver wheat to the factory and packaged food to the shop. Only stocked shops earn sales revenue. Claim contracts under Trade to fund expansion. Industrial production requires educated workers and construction planks. Existing roads form a fixed connected network; arbitrary road editing is not included.
+
+Tycoon uses separate versioned IndexedDB keys (`tycoon:save`, `tycoon:backup`), a validated import format, previous-save corruption recovery, v1→v2 migration, five-second autosaves, and up to eight hours of supply-constrained offline simulation. No Nation Rise saves are changed. Export/import is under Nation; Android exports use the native share sheet. No ads, premium currency, accounts, or purchases are integrated.
+
+### Android preparation
+
+The Capacitor Android project is checked in. It starts at `/nation-tycoon/`, bundles local web assets, locks portrait orientation, and handles back/background/resume. Build with:
+
+```sh
+npm ci --cache /tmp/orbit-npm-cache
+npm run android:sync
+npm run android:open
+# In Android Studio: build/run on a device or emulator.
+# Or with a configured SDK: cd android && ./gradlew assembleDebug
+```
+
+`android:sync` builds a Next.js static export into `out/` and copies it into the native project. The normal `npm run build` remains the Vercel server build; do not run both builds against `.next` concurrently. Android compilation needs JDK 21 and an Android SDK matching the Gradle project. Signing and Play Store publication are separate steps. Generated APKs, SDK paths, keystores, and copied web assets are ignored.
+
+### Scope and remaining work
+
+This is a playable vertical slice with connected-economy and idle progression systems. It is not a completed commercial release. Green Valley is the complete starter environment; Copper Ridge and Lakeside open additional plots and industry. Tourism/technology districts, airports, seaports beyond the cargo terminal, megaprojects, unique manager skill trees, free-form road building, a full soundtrack, and extensive long-term balance remain future content. Current audio provides action chimes and an optional quiet ambient tone, not the full vehicle/factory soundscape. Reduced-motion and 30fps low-graphics controls are under Nation. Native behavior and performance still require Android device testing; browser checks do not establish 60fps on phones.

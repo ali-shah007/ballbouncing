@@ -10,20 +10,31 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "format": "prettier --write src tests *.ts *.json README.md",
-    "format:check": "prettier --check src tests *.ts *.json README.md"
+    "format:check": "prettier --check src tests *.ts *.json README.md",
+    "build:android": "TYCOON_STATIC_EXPORT=1 next build",
+    "android:sync": "npm run build:android && cap sync android",
+    "android:open": "cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/manrope": "^5.3.0",
     "idb-keyval": "^6.2.2",
     "lucide-react": "^0.468.0",
     "next": "^16.0.0",
+    "phaser": "^3.90.0",
     "pixi.js": "^8.14.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "three": "^0.186.1"
+    "three": "^0.186.1",
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
     "@playwright/test": "^1.56.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
