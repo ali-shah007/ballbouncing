@@ -3,7 +3,7 @@ import { CircleDot, Orbit, ArrowUpRight } from "lucide-react";
 export default function ModeSwitcher({
   active = "balls",
 }: {
-  active?: "balls" | "planet" | "nation" | "tycoon" | "state";
+  active?: "balls" | "planet" | "nation" | "tycoon" | "state" | "shorts";
 }) {
   return (
     <nav
@@ -12,6 +12,13 @@ export default function ModeSwitcher({
     >
       <span className="mode-label">PICK YOUR UNIVERSE</span>
       <div>
+        <Link
+          href="/shorts-lab"
+          className={active === "shorts" ? "active" : ""}
+          aria-current={active === "shorts" ? "page" : undefined}
+        >
+          <Orbit size={16} /> Shorts Lab <span className="mode-new">NEW</span>
+        </Link>
         <Link
           href="/"
           className={active === "balls" ? "active" : ""}

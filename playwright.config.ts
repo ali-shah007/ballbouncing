@@ -14,5 +14,14 @@ export default defineConfig({
     },
     viewport: { width: 1440, height: 1100 },
   },
+  projects: [
+    { name: "authentication", testMatch: /auth.setup.ts/ },
+    {
+      name: "browser",
+      testIgnore: /auth.setup.ts/,
+      use: { storageState: "test-results/auth.json" },
+      dependencies: ["authentication"],
+    },
+  ],
   workers: 1,
 });

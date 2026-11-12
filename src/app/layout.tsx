@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s | Orbit Studio",
   },
   description:
-    "Create oddly satisfying bouncing ball videos with musical sound effects. Customize gravity, rotating rings, escape rules, and ongoing stories in your browser. Free, no sign-up.",
+    "Create oddly satisfying bouncing ball videos with musical sound effects. Customize gravity, rotating rings, escape rules, and ongoing stories in your browser. Private creator workspace.",
   openGraph: {
     type: "website",
     siteName: "Orbit Studio",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
   icons: { icon: "/icon.svg" },
 };
 export default function RootLayout({
