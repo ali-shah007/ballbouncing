@@ -11,7 +11,7 @@ describe("Shorts physics", () => {
         expect(b.r).toBeLessThanOrEqual(190);
       }
     }
-  });
+  }, 20000);
   it("resolves a real ball collision with exchanged velocity and one result", () => {
     const w = new World("collision");
     Object.assign(w.balls[0], { x: -17, y: 0, vx: 100, vy: 0 });

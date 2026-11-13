@@ -1,10 +1,63 @@
-export type Mode = "collision" | "escape" | "growth" | "duel" | "overflow";
+import { isReference, seedReference, stepReference } from "./reference";
+export type Mode =
+  | "collision"
+  | "escape"
+  | "growth"
+  | "duel"
+  | "overflow"
+  | "bloom"
+  | "mandala"
+  | "mushroom"
+  | "gravity"
+  | "crusher"
+  | "pop";
 export const MODES: {
   id: Mode;
   name: string;
   hook: string;
   description: string;
 }[] = [
+  {
+    id: "crusher",
+    name: "Crescent Crushers",
+    hook: "EVERY CRUSH SPLITS A BALL IN TWO",
+    description:
+      "Counter-rotating curved crushers trigger splits and sparkling bursts.",
+  },
+  {
+    id: "pop",
+    name: "Hexagon Pop",
+    hook: "EVERY POP BALL DOUBLES",
+    description: "Red spikes split balls inside a rotating hexagon.",
+  },
+
+  {
+    id: "bloom",
+    name: "Collision Bloom",
+    hook: "EVERY COLLISION SPLITS BOTH BALLS",
+    description: "Pearlescent balls multiply and shrink into a living mosaic.",
+  },
+  {
+    id: "mandala",
+    name: "Collision Mandalas",
+    hook: "COLLISION MANDALAS",
+    description: "Twenty-four synchronized neon paths weave circular patterns.",
+  },
+  {
+    id: "mushroom",
+    name: "Mushroom Multiplier",
+    hook: "EVERY BALL COLLISION MAKES ANOTHER BALL",
+    description:
+      "A mushroom-shaped arena fills through actual ball collisions.",
+  },
+  {
+    id: "gravity",
+    name: "Gravity Cascade",
+    hook: "HOW MANY BALLS WILL FIT?",
+    description:
+      "Two balls become a colourful crowd as collisions create more.",
+  },
+
   {
     id: "collision",
     name: "Collision Chase",
@@ -64,6 +117,16 @@ export class World {
   outcome = "";
   hold = 0;
   nextId = 0;
+  referenceWave = 0;
+  loop = false;
+  sparks: {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    hue: number;
+    life: number;
+  }[] = [];
   constructor(
     mode: Mode,
     public limit = 4,
@@ -91,9 +154,15 @@ export class World {
   }
   seed() {
     this.balls = [];
+    this.referenceWave = 0;
+    this.sparks = [];
     this.time = 0;
     this.outcome = "";
     this.hold = 0;
+    if (isReference(this.mode)) {
+      seedReference(this);
+      return;
+    }
     this.add(-130, -110, 235, 160);
     if (this.mode === "collision" || this.mode === "duel") {
       this.balls[0].hue = 140;
@@ -103,6 +172,17 @@ export class World {
     if (this.mode === "growth") this.balls[0].r = 13;
   }
   step(dt: number): Event[] {
+    if (isReference(this.mode)) {
+      if (this.outcome && this.loop) {
+        this.hold -= Math.min(0.05, Math.max(0, dt));
+        if (this.hold <= 0) {
+          this.round++;
+          this.seed();
+        }
+        return [];
+      }
+      return stepReference(this, dt);
+    }
     const events: Event[] = [];
     dt = Math.min(Math.max(dt, 0), 0.05);
     if (this.hold > 0) {

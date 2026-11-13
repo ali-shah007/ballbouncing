@@ -1,3 +1,5 @@
+import { isReference } from "./reference";
+import { renderReference } from "./reference-render";
 import { MODES, World } from "./physics";
 export function render(
   ctx: CanvasRenderingContext2D,
@@ -5,6 +7,10 @@ export function render(
   title: string,
   brand: string,
 ) {
+  if (isReference(w.mode)) {
+    renderReference(ctx, w, title, brand);
+    return;
+  }
   const W = 1080,
     H = 1920;
   ctx.fillStyle = "#050711";

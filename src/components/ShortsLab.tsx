@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import ModeSwitcher from "./ModeSwitcher";
 import { World, MODES, Mode, Event } from "@/shorts/physics";
+import { isReference } from "@/shorts/reference";
 import { render } from "@/shorts/render";
 import { SoundEngine } from "@/lib/audio";
 class ShortsAudio extends SoundEngine {
@@ -12,7 +13,7 @@ class ShortsAudio extends SoundEngine {
     this.last = now;
     const o = this.context.createOscillator(),
       g = this.context.createGain();
-    o.type = e.kind === "split" ? "triangle" : "sine";
+    o.type = e.kind === "split" || isReference(mode) ? "triangle" : "sine";
     const notes = [261.63, 329.63, 392, 523.25, 659.25, 783.99];
     const f =
       e.kind === "fail"
@@ -29,7 +30,10 @@ class ShortsAudio extends SoundEngine {
     );
     g.gain.setValueAtTime(0, now);
     g.gain.linearRampToValueAtTime(0.4, now + 0.004);
-    g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    g.gain.exponentialRampToValueAtTime(
+      0.001,
+      now + (isReference(mode) ? 0.09 : 0.3),
+    );
     o.connect(g);
     g.connect(this.gain);
     o.start(now);
@@ -39,7 +43,9 @@ class ShortsAudio extends SoundEngine {
 export default function ShortsLab() {
   const canvas = useRef<HTMLCanvasElement>(null),
     frame = useRef<HTMLDivElement>(null),
-    world = useRef(new World("collision"));
+    world = useRef(
+      Object.assign(new World("bloom", 4, 30, 1024), { loop: true }),
+    );
   const audio = useRef<ShortsAudio | null>(null),
     recorder = useRef<MediaRecorder | null>(null),
     stream = useRef<MediaStream | null>(null),
@@ -50,7 +56,7 @@ export default function ShortsLab() {
     brandRef = useRef("ORBIT STUDIO"),
     captureStart = useRef(0),
     linkRef = useRef("");
-  const [mode, setMode] = useState<Mode>("collision"),
+  const [mode, setMode] = useState<Mode>("bloom"),
     [play, setPlay] = useState(false),
     [sound, setSound] = useState(true),
     [volume, setVolume] = useState(55),
@@ -58,6 +64,8 @@ export default function ShortsLab() {
     [limit, setLimit] = useState(4),
     [target, setTarget] = useState(30),
     [cap, setCap] = useState(180),
+    [density, setDensity] = useState(1024),
+    [loop, setLoop] = useState(true),
     [title, setTitle] = useState(""),
     [brand, setBrand] = useState("ORBIT STUDIO"),
     [recording, setRecording] = useState(false),
@@ -114,7 +122,10 @@ export default function ShortsLab() {
       audio.current.gain.gain.value = (volume / 100) * 0.3;
   }
   function reset(m = mode) {
-    world.current = new World(m, limit, target, cap);
+    world.current = Object.assign(
+      new World(m, limit, target, isReference(m) ? density : cap),
+      { loop },
+    );
   }
   async function toggle() {
     try {
@@ -225,7 +236,7 @@ export default function ShortsLab() {
       <ModeSwitcher active="shorts" />
       <section className="shorts-intro">
         <p className="shorts-kicker">
-          FIVE EXPERIMENTS. ENDLESS POSSIBILITIES.
+          REFERENCE-INSPIRED PHYSICS. ENDLESS POSSIBILITIES.
         </p>
         <h1>
           Your next <em>“watch till the end.”</em>
@@ -365,13 +376,54 @@ export default function ShortsLab() {
                   onChange={(e) => {
                     const v = Number(e.target.value);
                     setCap(v);
-                    world.current = new World(mode, limit, target, v);
+                    world.current = Object.assign(
+                      new World(mode, limit, target, v),
+                      { loop },
+                    );
                   }}
                 >
                   <option value={80}>80 balls</option>
                   <option value={180}>180 balls</option>
                   <option value={300}>300 balls</option>
                 </select>
+              </label>
+            )}
+            {isReference(mode) && mode !== "mandala" && (
+              <label>
+                Population limit
+                <select
+                  value={density}
+                  disabled={recording}
+                  onChange={(e) => {
+                    const v = Number(e.target.value);
+                    setDensity(v);
+                    world.current = Object.assign(
+                      new World(mode, limit, target, v),
+                      { loop },
+                    );
+                  }}
+                >
+                  {[256, 512, 1024, 2048, 4096].map((n) => (
+                    <option value={n} key={n}>
+                      {n.toLocaleString()} balls
+                      {n > 1024 ? " · desktop recommended" : ""}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {isReference(mode) && mode !== "mandala" && (
+              <label className="shorts-check">
+                <input
+                  type="checkbox"
+                  checked={loop}
+                  disabled={recording}
+                  onChange={(e) => {
+                    setLoop(e.target.checked);
+                    world.current.loop = e.target.checked;
+                  }}
+                />
+                Loop after capacity (2-second ending)
               </label>
             )}
             <label className="shorts-check">

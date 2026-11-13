@@ -90,3 +90,53 @@ test("Shorts Lab fits a phone and logout revokes browser access", async ({
   await page.goto("/nation-tycoon");
   await expect(page).toHaveURL(/login/);
 });
+
+test("reference presets animate cleanly and record population video with audio", async ({
+  page,
+}) => {
+  test.setTimeout(60000);
+  await page.goto("/shorts-lab");
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.getByRole("button", { name: "Play with sound" }).click();
+  for (const name of [
+    "Crescent Crushers",
+    "Hexagon Pop",
+    "Collision Bloom",
+    "Collision Mandalas",
+    "Mushroom Multiplier",
+    "Gravity Cascade",
+  ]) {
+    await page.getByRole("button", { name: new RegExp(name) }).click();
+    await page.waitForTimeout(2200);
+    await page.locator("canvas").screenshot({
+      path: `/tmp/reference-${name.toLowerCase().replaceAll(" ", "-")}.png`,
+    });
+  }
+  await page.getByRole("button", { name: /Collision Bloom/ }).click();
+  await page.getByRole("button", { name: "Record Shorts video" }).click();
+  await page.waitForTimeout(4500);
+  await page.getByRole("button", { name: /Stop recording/ }).click();
+  const pending = page.waitForEvent("download");
+  await page.getByRole("link", { name: /Download your video/ }).click();
+  const dl = await pending;
+  const file =
+    "/tmp/reference-bloom." +
+    (dl.suggestedFilename().endsWith(".mp4") ? "mp4" : "webm");
+  await dl.saveAs(file);
+  const info = JSON.parse(
+    execFileSync(
+      "ffprobe",
+      ["-v", "quiet", "-print_format", "json", "-show_streams", file],
+      { encoding: "utf8" },
+    ),
+  );
+  const video = info.streams.find(
+    (s: { codec_type: string }) => s.codec_type === "video",
+  );
+  expect([video.width, video.height]).toEqual([1080, 1920]);
+  expect(
+    info.streams.some((s: { codec_type: string }) => s.codec_type === "audio"),
+  ).toBe(true);
+  expect(errors).toEqual([]);
+});
