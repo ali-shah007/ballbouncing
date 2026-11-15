@@ -2,7 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 import ModeSwitcher from "./ModeSwitcher";
 import { World, MODES, Mode, Event } from "@/shorts/physics";
-import { Episode, renderEnding, EPISODE_SECONDS } from "@/shorts/story";
+import {
+  Episode,
+  renderEnding,
+  EPISODE_SECONDS,
+  DEFAULT_MOTION_SPEED,
+} from "@/shorts/story";
 import { isMaterial } from "@/shorts/material";
 import { isReference } from "@/shorts/reference";
 import { render } from "@/shorts/render";
@@ -86,6 +91,7 @@ export default function ShortsLab() {
     [play, setPlay] = useState(false),
     [sound, setSound] = useState(true),
     [volume, setVolume] = useState(55),
+    [speed, setSpeed] = useState(DEFAULT_MOTION_SPEED),
     [duration] = useState(EPISODE_SECONDS),
     [limit, setLimit] = useState(4),
     [target, setTarget] = useState(30),
@@ -105,6 +111,10 @@ export default function ShortsLab() {
     [error, setError] = useState("");
   useEffect(() => {
     mounted.current = true;
+    const initial = MODES.find(
+      (m) => m.id === new URLSearchParams(window.location.search).get("mode"),
+    );
+    if (initial) chooseMode(initial.id);
     let raf = 0,
       last = 0,
       stamp = "";
@@ -194,7 +204,15 @@ export default function ShortsLab() {
       new World(m, limit, target, isReference(m) ? density : cap, seed.current),
       { loop },
     );
-    episode.current = new Episode(world.current);
+    episode.current = new Episode(world.current, EPISODE_SECONDS, speed);
+  }
+  function chooseMode(m: Mode) {
+    if (capture.current || preparing) return;
+    setMode(m);
+    reset(m);
+    const url = new URL(window.location.href);
+    url.searchParams.set("mode", m);
+    window.history.replaceState(null, "", url);
   }
   async function toggle() {
     try {
@@ -297,22 +315,82 @@ export default function ShortsLab() {
         <h1>
           Your next <em>“watch till the end.”</em>
         </h1>
-        <p>Neon physics, musical impacts and a frame made for the feed.</p>
+        <p>
+          17 experiments: bouncing balls, slime, jelly, crushing and more. Every
+          video concludes in 45 seconds.
+        </p>
       </section>
-      <div className="shorts-layout">
+      <section
+        className="shorts-discover"
+        aria-label="Slime, crushing and new simulations"
+      >
+        <p className="shorts-kicker">TRY SOMETHING NEW</p>
+        <div className="shorts-featured">
+          {(
+            [
+              ["slime", "Slime Squish", "Stretch & squish", "◒"],
+              ["jelly", "Jelly Rain", "Soft-body bounce", "◈"],
+              ["press", "Hydraulic Crush", "Crush colourful blocks", "▤"],
+              ["sand", "Kinetic Sand Press", "Compress rainbow grains", "⠿"],
+              ["hammer", "Swinging Hammer", "Every hit makes four", "⚒"],
+              ["vortex", "Rainbow Vortex", "Swirling neon trails", "◎"],
+            ] as const
+          ).map(([id, name, detail, icon]) => (
+            <a
+              key={id}
+              href={`?mode=${id}#shorts-workspace`}
+              aria-label={`Open ${name}`}
+              aria-disabled={recording || preparing}
+              className={mode === id ? "selected" : ""}
+              onClick={(e) => {
+                e.preventDefault();
+                if (recording || preparing) return;
+                chooseMode(id);
+                frame.current?.scrollIntoView({
+                  behavior: "instant",
+                  block: "center",
+                });
+              }}
+            >
+              <span aria-hidden="true" className={`shorts-mode-art art-${id}`}>
+                {icon}
+              </span>
+              <strong>{name}</strong>
+              <small>{detail}</small>
+            </a>
+          ))}
+        </div>
+      </section>
+      <div className="shorts-layout" id="shorts-workspace">
         <section className="shorts-preview">
           <div className="shorts-preview-label">
-            <span>LIVE PREVIEW</span>
+            <span>
+              {MODES.find((m) => m.id === mode)!.name.toUpperCase()} · {speed}×
+            </span>
             <span>EXPORT 1080 × 1920 / 9:16 / 24 FPS</span>
           </div>
-          <div className="shorts-frame" ref={frame}>
-            <canvas
-              ref={canvas}
-              width={540}
-              height={960}
-              aria-label="Shorts simulation preview"
+          <label className="shorts-speed">
+            <span>
+              Motion speed <strong>{speed}×</strong>
+            </span>
+            <input
+              aria-label="Motion speed"
+              type="range"
+              min={0.75}
+              max={3}
+              step={0.25}
+              value={speed}
+              disabled={recording || preparing}
+              onChange={(e) => {
+                const next = Number(e.target.value);
+                setSpeed(next);
+                if (episode.current) episode.current.speed = next;
+              }}
             />
-          </div>
+            <small>
+              0.75× relaxed · 1.5× lively · 3× intense. Video length stays 45s.
+            </small>
+          </label>
           <div className="shorts-transport">
             <button disabled={recording || preparing} onClick={toggle}>
               {play ? "Pause" : "Play with sound"}
@@ -332,6 +410,14 @@ export default function ShortsLab() {
               Fullscreen
             </button>
           </div>
+          <div className="shorts-frame" ref={frame}>
+            <canvas
+              ref={canvas}
+              width={540}
+              height={960}
+              aria-label="Shorts simulation preview"
+            />
+          </div>
         </section>
         <aside className="shorts-controls">
           <section>
@@ -342,10 +428,9 @@ export default function ShortsLab() {
                 const values = crypto.getRandomValues(new Uint32Array(2));
                 seed.current = values[0];
                 const m = MODES[values[1] % MODES.length].id;
-                setMode(m);
+                chooseMode(m);
                 setTitle("");
                 titleRef.current = "";
-                reset(m);
               }}
             >
               Surprise me · random simulation
@@ -357,11 +442,10 @@ export default function ShortsLab() {
                   disabled={recording || preparing}
                   aria-pressed={mode === m.id}
                   onClick={() => {
-                    setMode(m.id);
-                    reset(m.id);
+                    chooseMode(m.id);
                   }}
                 >
-                  <span>0{i + 1}</span>
+                  <span>{String(i + 1).padStart(2, "0")}</span>
                   <div>
                     <strong>{m.name}</strong>
                     <small>{m.description}</small>
@@ -413,7 +497,11 @@ export default function ShortsLab() {
                     );
                     setLimit(v);
                     world.current = new World(mode, v, target, cap);
-                    episode.current = new Episode(world.current);
+                    episode.current = new Episode(
+                      world.current,
+                      EPISODE_SECONDS,
+                      speed,
+                    );
                   }}
                 />
               </label>
@@ -434,7 +522,11 @@ export default function ShortsLab() {
                     );
                     setTarget(v);
                     world.current = new World(mode, limit, v, cap);
-                    episode.current = new Episode(world.current);
+                    episode.current = new Episode(
+                      world.current,
+                      EPISODE_SECONDS,
+                      speed,
+                    );
                   }}
                 />
               </label>
@@ -452,7 +544,11 @@ export default function ShortsLab() {
                       new World(mode, limit, target, v, seed.current),
                       { loop },
                     );
-                    episode.current = new Episode(world.current);
+                    episode.current = new Episode(
+                      world.current,
+                      EPISODE_SECONDS,
+                      speed,
+                    );
                   }}
                 >
                   <option value={80}>80 balls</option>
@@ -474,7 +570,11 @@ export default function ShortsLab() {
                       new World(mode, limit, target, v, seed.current),
                       { loop },
                     );
-                    episode.current = new Episode(world.current);
+                    episode.current = new Episode(
+                      world.current,
+                      EPISODE_SECONDS,
+                      speed,
+                    );
                   }}
                 >
                   {[256, 512, 1024, 2048, 4096].map((n) => (

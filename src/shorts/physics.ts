@@ -251,10 +251,10 @@ export class World {
       }
     }
   }
-  step(dt: number): Event[] {
+  step(dt: number, continueMotion = false): Event[] {
     if (isMaterial(this.mode)) return stepMaterial(this, dt);
     if (isReference(this.mode)) {
-      if (this.outcome && this.loop) {
+      if (this.outcome && this.loop && !continueMotion) {
         this.hold -= Math.min(0.05, Math.max(0, dt));
         if (this.hold <= 0) {
           this.round++;
@@ -262,11 +262,11 @@ export class World {
         }
         return [];
       }
-      return stepReference(this, dt);
+      return stepReference(this, dt, continueMotion);
     }
     const events: Event[] = [];
     dt = Math.min(Math.max(dt, 0), 0.05);
-    if (this.hold > 0) {
+    if (this.hold > 0 && !continueMotion) {
       this.hold -= dt;
       if (this.hold <= 0) {
         this.round++;
@@ -274,12 +274,12 @@ export class World {
       }
       return events;
     }
-    if (this.outcome) return events;
+    if (this.outcome && !continueMotion) return events;
     const steps = Math.ceil(dt / 0.004);
     if (!steps) return events;
     const h = dt / steps;
     for (let n = 0; n < steps; n++) {
-      if (this.outcome) break;
+      if (this.outcome && !continueMotion) break;
       this.time += h;
       this.angle += h * 0.55;
       for (const b of [...this.balls]) {
@@ -376,7 +376,8 @@ export class World {
           }
         }
         if (hit) {
-          b.hits++;
+          // A finished duel keeps its final score while the balls keep bouncing.
+          if (!(this.mode === "duel" && this.outcome)) b.hits++;
           this.hits++;
           events.push({ id: b.id, kind: "hit" });
           if (this.mode === "growth") {
@@ -385,7 +386,7 @@ export class World {
             b.vy *= 1.025;
             b.hue += 17;
           }
-          if (this.mode === "duel" && b.hits >= this.target) {
+          if (this.mode === "duel" && b.hits >= this.target && !this.outcome) {
             this.outcome = (b.id % 2 === 0 ? "GREEN" : "CYAN") + " WINS";
             this.hold = 4;
             events.push({ id: b.id, kind: "win" });
@@ -421,9 +422,9 @@ export class World {
             b.vy += v * ny;
             events.push({
               id: a.id,
-              kind: this.mode === "collision" ? "win" : "hit",
+              kind: this.mode === "collision" && !this.outcome ? "win" : "hit",
             });
-            if (this.mode === "collision") {
+            if (this.mode === "collision" && !this.outcome) {
               this.outcome = "THEY COLLIDED!";
               this.hold = 4;
             }
@@ -436,11 +437,15 @@ export class World {
         this.hold = 1.3;
         events.push({ id: 0, kind: "fail" });
       }
-      if (this.mode === "overflow" && this.balls.length >= this.cap) {
+      if (
+        this.mode === "overflow" &&
+        this.balls.length >= this.cap &&
+        !this.outcome
+      ) {
         this.outcome = "CAPACITY REACHED";
         events.push({ id: 0, kind: "win" });
       }
-      if (this.mode === "growth" && this.balls[0].r >= 190) {
+      if (this.mode === "growth" && this.balls[0].r >= 190 && !this.outcome) {
         this.outcome = "MAXIMUM GROWTH REACHED";
         events.push({ id: 0, kind: "win" });
       }

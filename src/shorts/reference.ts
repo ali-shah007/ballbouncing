@@ -141,9 +141,13 @@ export function seedReference(w: World) {
     b.hue = 230;
   }
 }
-export function stepReference(w: World, dt: number): Event[] {
+export function stepReference(
+  w: World,
+  dt: number,
+  continueMotion = false,
+): Event[] {
   const events: Event[] = [];
-  if (w.outcome) return events;
+  if (w.outcome && !continueMotion) return events;
   dt = Math.min(0.05, Math.max(0, dt));
   if (!dt) return events;
   const count = w.balls.length;
@@ -382,7 +386,7 @@ export function stepReference(w: World, dt: number): Event[] {
         }
       }
     }
-    if (total >= w.cap) {
+    if (total >= w.cap && !w.outcome) {
       w.outcome = w.loop ? "CAPACITY REACHED · NEXT CYCLE" : "ARENA FILLED";
       w.hold = 2;
       events.push({ id: 0, kind: "win" });

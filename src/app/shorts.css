@@ -124,6 +124,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 15px;
+  margin-bottom: 16px;
 }
 .shorts-controls {
   display: grid;
@@ -292,5 +293,99 @@ html:has(.shorts-shell) {
     right: 16px;
     bottom: 16px;
     max-width: calc(100vw - 32px);
+  }
+}
+.shorts-discover {
+  max-width: 1450px;
+  margin: 0 auto 30px;
+}
+.shorts-featured {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+.shorts-featured a {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  text-decoration: none;
+  color: #edf3ff;
+  border: 1px solid #33435b;
+  border-radius: 16px;
+  background: #101a2b;
+}
+.shorts-featured a:hover,
+.shorts-featured a:focus-visible,
+.shorts-featured a.selected {
+  border-color: #b8f481;
+  outline-color: #b8f481;
+}
+.shorts-featured a[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.shorts-featured strong {
+  font-size: 13px;
+}
+.shorts-featured small {
+  color: #a1b4d0;
+  font-size: 11px;
+}
+.shorts-mode-art {
+  display: grid;
+  place-items: center;
+  height: 72px;
+  border-radius: 10px;
+  font-size: 42px;
+  color: #b8f481;
+  background: radial-gradient(ellipse at 50% 100%, #357b67 0%, #0d1b2b 70%);
+}
+.art-jelly {
+  color: #edb9ff;
+  background: radial-gradient(ellipse at 50% 100%, #773a95, #15152b 70%);
+}
+.art-press,
+.art-hammer {
+  color: #ffd391;
+  background: radial-gradient(ellipse at 50% 100%, #73542f, #171a2b 70%);
+}
+.art-sand {
+  color: #ffbcdb;
+  background: radial-gradient(ellipse at 50% 100%, #874366, #19182b 70%);
+}
+.art-vortex {
+  color: #a2e5ff;
+  background: radial-gradient(ellipse at 50% 100%, #285b89, #10172b 70%);
+}
+.shorts-speed {
+  display: grid;
+  gap: 10px;
+  margin-top: 0;
+}
+.shorts-speed > span {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+.shorts-speed strong {
+  color: #b8f481;
+}
+.shorts-speed input {
+  width: 100%;
+  accent-color: #b8f481;
+}
+.shorts-speed small {
+  font-size: 11px;
+  color: #a1b4d0;
+  line-height: 1.5;
+}
+@media (max-width: 1100px) {
+  .shorts-featured {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .shorts-featured {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

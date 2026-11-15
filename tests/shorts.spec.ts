@@ -361,3 +361,46 @@ test("a full targeted episode ends in a downloadable 45-second video", async ({
   ]);
   expect(existsSync("/tmp/story-45-ending.png")).toBe(true);
 });
+
+test("new modes are discoverable, directly linkable and keep adjustable speed on a phone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/shorts-lab?mode=slime");
+  await expect(
+    page.getByRole("button", { name: /Slime Squish/ }),
+  ).toHaveAttribute("aria-pressed", "true");
+  const cards = page.getByRole("region", {
+    name: "Slime, crushing and new simulations",
+  });
+  await expect(cards.getByRole("link")).toHaveCount(6);
+  await expect(page.getByLabel("Motion speed", { exact: true })).toHaveValue(
+    "1.5",
+  );
+  await page.getByLabel("Motion speed", { exact: true }).fill("2.5");
+  await cards
+    .getByRole("link", { name: "Open Hydraulic Crush", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: /Hydraulic Crush/ }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page).toHaveURL(/mode=press/);
+  await expect(page.getByLabel("Motion speed", { exact: true })).toHaveValue(
+    "2.5",
+  );
+  await page.getByRole("button", { name: "Play with sound" }).click();
+  await page.waitForTimeout(1000);
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await page
+    .locator("canvas")
+    .screenshot({ path: "/tmp/shorts-fast-crush-mobile.png" });
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
+  await page
+    .getByRole("link", { name: "Slime & crushing", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: /Slime Squish/ }),
+  ).toHaveAttribute("aria-pressed", "true");
+});

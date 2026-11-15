@@ -19,6 +19,9 @@ export default function ModeSwitcher({
         >
           <Orbit size={16} /> Shorts Lab <span className="mode-new">NEW</span>
         </Link>
+        <a href="/shorts-lab?mode=slime#shorts-workspace">
+          <CircleDot size={15} /> Slime &amp; crushing
+        </a>
         <Link
           href="/"
           className={active === "balls" ? "active" : ""}

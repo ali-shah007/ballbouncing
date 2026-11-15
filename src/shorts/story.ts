@@ -1,12 +1,14 @@
 import { World } from "./physics";
 import { isMaterial } from "./material";
 export const EPISODE_SECONDS = 45;
+export const DEFAULT_MOTION_SPEED = 1.5;
 export class Episode {
   elapsed = 0;
   finished = false;
   constructor(
     public world: World,
     public duration = EPISODE_SECONDS,
+    public speed = DEFAULT_MOTION_SPEED,
   ) {
     if (!isMaterial(world.mode)) world.loop = false;
   }
@@ -25,6 +27,8 @@ export class Episode {
             : "JELLY RAIN COMPLETE";
     if (w.mode === "duel") {
       const [a, b] = w.balls;
+      if (w.outcome === "GREEN WINS") return "GREEN WINS THE ROUND";
+      if (w.outcome === "CYAN WINS") return "CYAN WINS THE ROUND";
       return a.hits === b.hits
         ? "THE ROUND IS A DRAW"
         : a.hits > b.hits
@@ -53,36 +57,17 @@ export class Episode {
     );
     if (!motion) return [];
     const w = this.world;
-    let rate = 1;
-    // A birth remains a physical contact. Pacing varies simulation time, never the displayed count.
-    if (
-      [
-        "bloom",
-        "mushroom",
-        "gravity",
-        "crusher",
-        "pop",
-        "hammer",
-        "overflow",
-      ].includes(w.mode)
-    ) {
-      const initial = ["crusher", "pop", "hammer"].includes(w.mode) ? 1 : 2;
-      const progress =
-        Math.log(Math.max(initial, w.balls.length) / initial) /
-        Math.log(Math.max(initial + 1, w.cap) / initial);
-      const target = Math.pow(
-        Math.min(1, this.elapsed / (this.resultStarts - 1)),
-        1.45,
-      );
-      rate = Math.min(3, Math.max(0.12, 1 + (target - progress) * 8));
-    } else if (w.mode === "growth") rate = 2.5;
-    else if (w.mode === "duel") rate = 1.8;
-    else if (w.mode === "collision") rate = 0.035;
-    let remaining = Math.min(0.18, motion * rate);
+    // Motion speed is independent of the 45-second story clock. Never slow
+    // the whole scene down just to delay births or a winning contact.
+    const rate = Number.isFinite(this.speed)
+      ? Math.max(0.75, Math.min(3, this.speed))
+      : DEFAULT_MOTION_SPEED;
+    const pace = w.mode === "growth" ? 2.5 : w.mode === "duel" ? 1.8 : 1;
+    let remaining = Math.min(0.3, motion * rate * pace);
     const events = [];
-    while (remaining > 0 && (!w.outcome || w.mode === "escape")) {
+    while (remaining > 0) {
       const h = Math.min(0.025, remaining);
-      events.push(...w.step(h));
+      events.push(...w.step(h, w.mode !== "escape"));
       remaining -= h;
     }
     return events;
