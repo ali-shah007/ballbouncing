@@ -1,4 +1,9 @@
 "use client";
+import {
+  chooseVideoMime,
+  requireVideoTrack,
+  offerVideo,
+} from "@/lib/video-export";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { Application, Graphics, Text, TextStyle } from "pixi.js";
 import {
@@ -58,14 +63,10 @@ const SimulationCanvas = forwardRef<CanvasHandle, Props>(
             throw Error("Canvas recording is unavailable in this browser.");
           if (recorder.current?.state === "recording") return;
           const stream = canvas.captureStream(60);
+          requireVideoTrack(stream);
           const audio = sound.current.destination?.stream.getAudioTracks();
-          if (audio) audio.forEach((t) => stream.addTrack(t));
-          const mime = [
-            "video/webm;codecs=vp9,opus",
-            "video/webm;codecs=vp8,opus",
-            "video/webm",
-            "video/mp4",
-          ].find((t) => MediaRecorder.isTypeSupported(t));
+          if (audio) audio.forEach((t) => stream.addTrack(t.clone()));
+          const mime = chooseVideoMime(true);
           if (!mime)
             throw Error(
               "No supported video recording format was found in this browser.",
@@ -80,14 +81,12 @@ const SimulationCanvas = forwardRef<CanvasHandle, Props>(
           };
           recording.onstop = () => {
             latest.current.onRecording(false);
-            stream.getVideoTracks().forEach((t) => t.stop());
+            stream.getTracks().forEach((t) => t.stop());
             if (!chunks.length) return;
-            const url = URL.createObjectURL(new Blob(chunks, { type: mime }));
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `orbit-episode-${latest.current.episode}.${mime.includes("mp4") ? "mp4" : "webm"}`;
-            link.click();
-            setTimeout(() => URL.revokeObjectURL(url), 10000);
+            void offerVideo(
+              new Blob(chunks, { type: recording.mimeType }),
+              `orbit-episode-${latest.current.episode}.${recording.mimeType.includes("mp4") ? "mp4" : "webm"}`,
+            ).catch((e) => latest.current.onError(e.message));
           };
           recording.onerror = () => {
             latest.current.onError(

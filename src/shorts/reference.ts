@@ -1,6 +1,15 @@
 import type { World, Ball, Event } from "./physics";
 export const isReference = (mode: string) =>
-  ["bloom", "mandala", "mushroom", "gravity", "crusher", "pop"].includes(mode);
+  [
+    "bloom",
+    "mandala",
+    "mushroom",
+    "gravity",
+    "crusher",
+    "pop",
+    "hammer",
+    "vortex",
+  ].includes(mode);
 export type Point = { x: number; y: number };
 // Clockwise on the screen; sampled quadratic curves form a closed, concave arena.
 export const MUSHROOM: Point[] = (() => {
@@ -90,7 +99,22 @@ export function mushroomWall(b: Ball) {
   return true;
 }
 export function seedReference(w: World) {
-  if (w.mode === "crusher" || w.mode === "pop") {
+  if (w.mode === "vortex") {
+    for (let i = 0; i < Math.min(160, w.cap); i++) {
+      const a = w.random() * Math.PI * 2,
+        r = 50 + w.random() * 320;
+      const b = w.add(
+        Math.cos(a) * r,
+        Math.sin(a) * r,
+        -Math.sin(a) * 210,
+        Math.cos(a) * 210,
+      );
+      b.r = 6 + w.random() * 5;
+      b.hue = i * 2.25;
+    }
+    return;
+  }
+  if (w.mode === "crusher" || w.mode === "pop" || w.mode === "hammer") {
     const b = w.add(80, -180, 175, 100);
     b.r = 12;
     b.hue = 180;
@@ -147,7 +171,13 @@ export function stepReference(w: World, dt: number): Event[] {
     }
     for (const b of w.balls) {
       b.cool = Math.max(0, b.cool - h);
-      if (w.mode === "gravity" || w.mode === "pop") b.vy += 100 * h;
+      if (w.mode === "vortex") {
+        const r = Math.max(50, Math.hypot(b.x, b.y));
+        b.vx += ((-b.y / r) * 90 - b.x * 0.1) * h;
+        b.vy += ((b.x / r) * 90 - b.y * 0.1) * h;
+      }
+      if (w.mode === "gravity" || w.mode === "pop" || w.mode === "hammer")
+        b.vy += 100 * h;
       b.x += b.vx * h;
       b.y += b.vy * h;
       let wall = false;
@@ -168,9 +198,26 @@ export function stepReference(w: World, dt: number): Event[] {
           }
         }
       }
-      if (w.mode === "crusher" || w.mode === "pop") {
+      if (w.mode === "crusher" || w.mode === "pop" || w.mode === "hammer") {
         let touched = false;
-        if (w.mode === "crusher") {
+        if (w.mode === "hammer") {
+          const p = hammerPose(w.time);
+          const dx = b.x - p.x,
+            dy = b.y - p.y,
+            d = Math.hypot(dx, dy);
+          if (d < b.r + 53 && d > 0.001) {
+            const nx = dx / d,
+              ny = dy / d;
+            b.x += nx * (b.r + 54 - d);
+            b.y += ny * (b.r + 54 - d);
+            const relative = (b.vx - p.vx) * nx + (b.vy - p.vy) * ny;
+            if (relative < 0) {
+              b.vx -= 1.8 * relative * nx;
+              b.vy -= 1.8 * relative * ny;
+            }
+            touched = true;
+          }
+        } else if (w.mode === "crusher") {
           for (const arc of crusherArcs(w.angle)) {
             const dx = b.x - arc.x,
               dy = b.y;
@@ -208,6 +255,19 @@ export function stepReference(w: World, dt: number): Event[] {
           b.hue = (b.hue + 137.5) % 360;
           const child = w.add(b.x, b.y, -b.vy, b.vx);
           child.cool = 0.35;
+          if (w.mode === "hammer")
+            for (let j = 0; j < 2 && w.balls.length < w.cap; j++) {
+              const a = w.random() * Math.PI * 2;
+              const c = w.add(
+                b.x + Math.cos(a) * 35,
+                b.y + Math.sin(a) * 35,
+                Math.cos(a) * 230,
+                Math.sin(a) * 230,
+              );
+              c.r = b.r;
+              c.cool = 0.4;
+              c.hue = w.random() * 360;
+            }
           child.r = b.r;
           child.hue = (b.hue + 90) % 360;
           const speed = Math.max(180, Math.hypot(b.vx, b.vy));
@@ -268,7 +328,9 @@ export function stepReference(w: World, dt: number): Event[] {
             w.hits++;
             events.push({ id: b.id, kind: "hit" });
             if (
-              !["mandala", "crusher", "pop"].includes(w.mode) &&
+              !["mandala", "crusher", "pop", "hammer", "vortex"].includes(
+                w.mode,
+              ) &&
               a.cool <= 0 &&
               b.cool <= 0 &&
               w.balls.length < w.cap
@@ -301,7 +363,7 @@ export function stepReference(w: World, dt: number): Event[] {
       if (w.mode === "bloom") {
         b.r = Math.max(4, 110 / Math.sqrt(total));
         b.hue = (w.time * 32 + b.id * 9) % 360;
-      } else if (w.mode !== "mandala")
+      } else if (w.mode !== "mandala" && w.mode !== "vortex")
         b.r = Math.max(5, Math.min(12, 280 / Math.sqrt(total)));
       const speed = Math.hypot(b.vx, b.vy);
       const max = total > 1000 ? 340 : 650;
@@ -336,7 +398,7 @@ export function stepReference(w: World, dt: number): Event[] {
   w.sparks = w.sparks.filter((p) => p.life > 0);
   for (const b of w.balls) {
     b.trail.push({ x: b.x, y: b.y });
-    const n = w.mode === "mandala" ? 420 : 3;
+    const n = w.mode === "mandala" ? 420 : w.mode === "vortex" ? 30 : 3;
     if (b.trail.length > n) b.trail.shift();
   }
   return events;
@@ -416,4 +478,16 @@ function triangleContact(b: Ball, tri: Point[]) {
     }
   }
   return false;
+}
+
+export function hammerPose(t: number) {
+  const a = Math.sin(t * 1.7) * 1.0,
+    rate = Math.cos(t * 1.7) * 1.7;
+  return {
+    x: Math.sin(a) * 420,
+    y: -260 + Math.cos(a) * 420,
+    angle: a,
+    vx: Math.cos(a) * 420 * rate,
+    vy: -Math.sin(a) * 420 * rate,
+  };
 }

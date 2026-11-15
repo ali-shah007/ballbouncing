@@ -1,4 +1,9 @@
 "use client";
+import {
+  chooseVideoMime,
+  requireVideoTrack,
+  offerVideo,
+} from "@/lib/video-export";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
@@ -232,15 +237,11 @@ export default function NationStudio() {
         throw Error(
           "Recording needs a supported browser such as desktop Chrome.",
         );
-      const mime = [
-        "video/webm;codecs=vp9",
-        "video/webm;codecs=vp8",
-        "video/webm",
-        "video/mp4",
-      ].find((t) => MediaRecorder.isTypeSupported(t));
+      const mime = chooseVideoMime(false);
       if (!mime) throw Error("No supported video format.");
-      const stream = canvas.current.captureStream(30),
-        r = new MediaRecorder(stream, {
+      const stream = canvas.current.captureStream(30);
+      requireVideoTrack(stream);
+      const r = new MediaRecorder(stream, {
           mimeType: mime,
           videoBitsPerSecond: 8000000,
         }),
@@ -252,12 +253,10 @@ export default function NationStudio() {
         if (recordTimer.current) clearTimeout(recordTimer.current);
         stream.getTracks().forEach((t) => t.stop());
         setRecording(false);
-        const url = URL.createObjectURL(new Blob(chunks, { type: mime }));
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `nation-rise.${mime.includes("mp4") ? "mp4" : "webm"}`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 10000);
+        void offerVideo(
+          new Blob(chunks, { type: r.mimeType }),
+          `nation-rise.${r.mimeType.includes("mp4") ? "mp4" : "webm"}`,
+        ).catch((e) => setToast(e.message));
       };
       r.onerror = () =>
         setToast("Recording failed. Try again in a supported browser.");

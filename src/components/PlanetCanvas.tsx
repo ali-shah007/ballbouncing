@@ -1,4 +1,9 @@
 "use client";
+import {
+  chooseVideoMime,
+  requireVideoTrack,
+  offerVideo,
+} from "@/lib/video-export";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { PlanetRenderer, PlanetOptions } from "@/lib/planet-renderer";
 import { PlanetAudio } from "@/lib/planet-audio";
@@ -58,18 +63,14 @@ const PlanetCanvas = forwardRef<PlanetHandle, Props>(
           );
         if (recording.current?.state === "recording") return;
         await enableAudio();
-        const mime = [
-          "video/webm;codecs=vp9,opus",
-          "video/webm;codecs=vp8,opus",
-          "video/webm",
-          "video/mp4",
-        ].find((type) => MediaRecorder.isTypeSupported(type));
+        const mime = chooseVideoMime(true);
         if (!mime)
           throw Error("This browser has no supported recording format.");
         const stream = canvas.captureStream(60);
+        requireVideoTrack(stream);
         audio.current?.destination?.stream
           .getAudioTracks()
-          .forEach((track) => stream.addTrack(track));
+          .forEach((track) => stream.addTrack(track.clone()));
         const recorder = new MediaRecorder(stream, {
             mimeType: mime,
             videoBitsPerSecond: 10_000_000,
@@ -80,15 +81,13 @@ const PlanetCanvas = forwardRef<PlanetHandle, Props>(
         };
         recorder.onstop = () => {
           if (stopTimer.current) clearTimeout(stopTimer.current);
-          stream.getVideoTracks().forEach((t) => t.stop());
+          stream.getTracks().forEach((t) => t.stop());
           latest.current.onRecording(false);
           if (!chunks.length) return;
-          const url = URL.createObjectURL(new Blob(chunks, { type: mime }));
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `orbit-planet-${latest.current.options.world}.${mime.includes("mp4") ? "mp4" : "webm"}`;
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 10000);
+          void offerVideo(
+            new Blob(chunks, { type: recorder.mimeType }),
+            `orbit-planet-${latest.current.options.world}.${recorder.mimeType.includes("mp4") ? "mp4" : "webm"}`,
+          ).catch((e) => latest.current.onError(e.message));
         };
         recorder.onerror = () =>
           latest.current.onError(

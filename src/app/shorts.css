@@ -248,3 +248,49 @@
     padding: 20px 0;
   }
 }
+.shorts-result video {
+  width: 100%;
+  max-height: 500px;
+  aspect-ratio: 9/16;
+  background: #050711;
+  border: 1px solid #344662;
+  border-radius: 12px;
+}
+.shorts-result p {
+  font-size: 12px;
+  color: #adbfda;
+  line-height: 1.6;
+}
+html:has(.shorts-shell) {
+  scroll-behavior: auto;
+}
+.shorts-result {
+  overflow-anchor: none;
+}
+.shorts-result video {
+  display: block;
+  height: min(500px, 70svh);
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+.shorts-result .shorts-download {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1000;
+  background: #b8f481;
+  color: #142216;
+  padding: 16px 24px;
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px #0008;
+  font-weight: 800;
+  text-decoration: none;
+}
+@media (max-width: 600px) {
+  .shorts-result .shorts-download {
+    right: 16px;
+    bottom: 16px;
+    max-width: calc(100vw - 32px);
+  }
+}

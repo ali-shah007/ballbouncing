@@ -1,3 +1,4 @@
+import { isMaterial, renderMaterial } from "./material";
 import { isReference } from "./reference";
 import { renderReference } from "./reference-render";
 import { MODES, World } from "./physics";
@@ -7,6 +8,10 @@ export function render(
   title: string,
   brand: string,
 ) {
+  if (isMaterial(w.mode)) {
+    renderMaterial(ctx, w, title, brand);
+    return;
+  }
   if (isReference(w.mode)) {
     renderReference(ctx, w, title, brand);
     return;

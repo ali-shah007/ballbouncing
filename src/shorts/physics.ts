@@ -1,3 +1,9 @@
+import {
+  isMaterial,
+  seedMaterial,
+  stepMaterial,
+  MaterialState,
+} from "./material";
 import { isReference, seedReference, stepReference } from "./reference";
 export type Mode =
   | "collision"
@@ -10,13 +16,58 @@ export type Mode =
   | "mushroom"
   | "gravity"
   | "crusher"
-  | "pop";
+  | "pop"
+  | "hammer"
+  | "vortex"
+  | "slime"
+  | "jelly"
+  | "press"
+  | "sand";
 export const MODES: {
   id: Mode;
   name: string;
   hook: string;
   description: string;
 }[] = [
+  {
+    id: "hammer",
+    name: "Swinging Hammer",
+    hook: "THE SWINGING HAMMER",
+    description: "A pendulum hammer turns each struck ball into four.",
+  },
+  {
+    id: "slime",
+    name: "Slime Squish",
+    hook: "SLIME SQUISH",
+    description: "Glossy soft bodies stretch sideways under a rhythmic press.",
+  },
+  {
+    id: "jelly",
+    name: "Jelly Rain",
+    hook: "JELLY RAIN",
+    description: "Colourful spring membranes fall, bounce and wobble.",
+  },
+  {
+    id: "press",
+    name: "Hydraulic Crush",
+    hook: "SATISFYING CRUSH",
+    description:
+      "A moving press fractures colourful blocks into tumbling pieces.",
+  },
+  {
+    id: "sand",
+    name: "Kinetic Sand Press",
+    hook: "KINETIC SAND PRESS",
+    description: "A press compacts a rainbow bed of settling grains.",
+  },
+  {
+    id: "vortex",
+    name: "Rainbow Vortex",
+    hook: "A RAINBOW IN MOTION",
+    description:
+      "Swirling coloured particles orbit and ricochet around the arena.",
+  },
+
   {
     id: "crusher",
     name: "Crescent Crushers",
@@ -119,6 +170,13 @@ export class World {
   nextId = 0;
   referenceWave = 0;
   loop = false;
+  material: MaterialState | null = null;
+  randomState = 2026;
+  random() {
+    this.randomState =
+      (Math.imul(this.randomState, 1664525) + 1013904223) >>> 0;
+    return this.randomState / 4294967296;
+  }
   sparks: {
     x: number;
     y: number;
@@ -132,8 +190,10 @@ export class World {
     public limit = 4,
     public target = 30,
     public cap = 180,
+    public randomSeed = 2026,
   ) {
     this.mode = mode;
+    this.randomState = randomSeed;
     this.seed();
   }
   add(x = 0, y = -160, vx = 235, vy = 110) {
@@ -159,8 +219,20 @@ export class World {
     this.time = 0;
     this.outcome = "";
     this.hold = 0;
+    if (isMaterial(this.mode)) {
+      seedMaterial(this);
+      return;
+    }
     if (isReference(this.mode)) {
       seedReference(this);
+      if (this.randomSeed !== 2026) {
+        const a = this.random() * Math.PI * 2;
+        for (const b of this.balls) {
+          const vx = b.vx;
+          b.vx = vx * Math.cos(a) - b.vy * Math.sin(a);
+          b.vy = vx * Math.sin(a) + b.vy * Math.cos(a);
+        }
+      }
       return;
     }
     this.add(-130, -110, 235, 160);
@@ -170,8 +242,17 @@ export class World {
       b.hue = 190;
     }
     if (this.mode === "growth") this.balls[0].r = 13;
+    if (this.randomSeed !== 2026) {
+      const a = this.random() * Math.PI * 2;
+      for (const b of this.balls) {
+        const vx = b.vx;
+        b.vx = vx * Math.cos(a) - b.vy * Math.sin(a);
+        b.vy = vx * Math.sin(a) + b.vy * Math.cos(a);
+      }
+    }
   }
   step(dt: number): Event[] {
+    if (isMaterial(this.mode)) return stepMaterial(this, dt);
     if (isReference(this.mode)) {
       if (this.outcome && this.loop) {
         this.hold -= Math.min(0.05, Math.max(0, dt));

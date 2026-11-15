@@ -4,6 +4,7 @@ import {
   hexVertices,
   crusherArcs,
   spikeTriangles,
+  hammerPose,
 } from "./reference";
 export function renderReference(
   c: CanvasRenderingContext2D,
@@ -39,7 +40,11 @@ export function renderReference(
             ? "EVERY CRUSH SPLITS A BALL IN TWO"
             : w.mode === "pop"
               ? "EVERY POP BALL DOUBLES"
-              : "COLLISIONS CREATE MORE BALLS");
+              : w.mode === "hammer"
+                ? "THE SWINGING HAMMER"
+                : w.mode === "vortex"
+                  ? "RAINBOW VORTEX"
+                  : "COLLISIONS CREATE MORE BALLS");
     const words = head.split(/\s+/);
     let row = "",
       y = 280;
@@ -98,13 +103,39 @@ export function renderReference(
       c.fillStyle = "#ff264d";
       c.fill();
     }
+  if (w.mode === "hammer") {
+    const p = hammerPose(w.time);
+    c.strokeStyle = "#667d98";
+    c.lineWidth = 18;
+    c.beginPath();
+    c.moveTo(0, -260);
+    c.lineTo(p.x, p.y);
+    c.stroke();
+    c.fillStyle = "#b5cde8";
+    c.beginPath();
+    c.arc(0, -260, 15, 0, 7);
+    c.fill();
+    c.save();
+    c.translate(p.x, p.y);
+    c.rotate(-p.angle);
+    const g = c.createLinearGradient(-52, -30, 52, 30);
+    g.addColorStop(0, "#ffc578");
+    g.addColorStop(0.25, "#ced9e8");
+    g.addColorStop(0.8, "#62758d");
+    g.addColorStop(1, "#ffc578");
+    c.fillStyle = g;
+    c.beginPath();
+    c.roundRect(-55, -35, 110, 70, 10);
+    c.fill();
+    c.restore();
+  }
   for (const p of w.sparks) {
     c.fillStyle = `hsla(${p.hue} 100% 75% / ${Math.min(1, p.life)})`;
     c.fillRect(p.x, p.y, 3, 3);
   }
 
   for (const b of w.balls) {
-    if (w.mode === "mandala" && b.trail.length > 1) {
+    if ((w.mode === "mandala" || w.mode === "vortex") && b.trail.length > 1) {
       c.lineWidth = 3;
       c.strokeStyle = `hsla(${b.hue} 100% 75% / .8)`;
       c.beginPath();
@@ -144,6 +175,7 @@ export function renderReference(
   c.restore();
   if (w.mode === "gravity" || w.mode === "crusher" || w.mode === "pop")
     text(`Total Balls: ${w.balls.length}`, 1505, 30);
+  if (w.mode === "hammer") text("EACH HIT MAKES FOUR", 490, 27, "#b8c8df");
   if (w.outcome) text("CAPACITY REACHED", 1570, 38, "#ffda76");
   text(brand || "", 1655, 22, "#777d8b");
 }
